@@ -1,0 +1,33 @@
+package br.com.Spa.model;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Getter  @Setter
+@NoArgsConstructor
+public class Pagamento {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private  Agendamento agendamento;
+
+
+    @Column(nullable = false)
+    private String formaPagamento;
+
+    @Column(nullable = false)
+    private double preco;
+
+    @Column (nullable = false)
+    private LocalDateTime dataPagamento;
+
+}
