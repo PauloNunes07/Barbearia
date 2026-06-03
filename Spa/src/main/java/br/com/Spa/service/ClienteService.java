@@ -17,6 +17,22 @@ public class ClienteService {
         return clienteRepository.findAll();
     }
 
+    public Cliente buscarPorId(Long id) {
+
+        if(clienteRepository.existsById(id)){
+            return clienteRepository.buscarPorId(id);
+        }
+
+        throw new RuntimeException("erro esse id não existe");
+
+    }
+
+    public List<Cliente> buscarPorNome(String nome) {
+        return buscarPorNome(nome);
+    }
+
+    public
+
 
 
 
