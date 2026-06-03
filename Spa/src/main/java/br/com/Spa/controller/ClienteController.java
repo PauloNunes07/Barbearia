@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/clientes")
@@ -18,20 +19,60 @@ public class ClienteController {
     private ClienteService clienteService;
 
     @GetMapping
-    public ResponseEntity<List<Cliente>> getClientes() {
-        return ResponseEntity.ok();
+    public ResponseEntity<List<Cliente>> listarClientes() {
+        return ResponseEntity.ok(clienteService.listar());
+    }
+
+    @GetMapping("/buscar/nome")
+    public ResponseEntity<?> filtrarPorNome(@RequestParam String nome){
+
+        List<Cliente> clientes = clienteService.filtarPorNome(nome);
+        if(!clientes.isEmpty()){
+            return ResponseEntity.status(200).body(clientes);
+        }else{
+            return ResponseEntity.status(404).body("Error! Nome não encontrado!");
+        }
+
     }
 
     @PostMapping("/cadastrar")
-    public void cadastrarCliente(@RequestBody Cliente cliente) {
-         clienteRepository.save(cliente);
+    public ResponseEntity<?> cadastrarCliente(@RequestBody Cliente cliente) {
+        try{
+            clienteService.cadastrarCliente(cliente);
+            return ResponseEntity.status(201).body("Curso Cadastrado Com Sucesso!");
+        } catch (RuntimeException e){
+            return ResponseEntity.status(409).body("Erro ao cadastrar Cliente!");
+        }
+
     }
 
     @DeleteMapping("/remover/{id}")
-    public void removerCliente(@PathVariable Long id) {
-        if(clienteRepository.existsById(id)) {
-            clienteRepository.deleteById(id);
+    public ResponseEntity<?> removerCliente(@PathVariable Long id) {
+        try{
+            clienteService.removerCliente(id);
+            return ResponseEntity.status(200).body("Cliente Removido Com Sucesso!");
+
         }
+        catch (RuntimeException e){
+            return ResponseEntity.status(409).body("Erro ao tentar remover o Cliente");
+        }
+
     }
 
+    @PutMapping("/atualizar/{id}")
+    public ResponseEntity<?> atualizarContato(
+            @PathVariable Long id,
+            @RequestParam String telefone,
+            @RequestParam String email) {
+
+        Optional<Cliente> resultado =
+                clienteService.atualizarContato(id, telefone, email);
+
+        if (resultado.isPresent()) {
+            return ResponseEntity.ok(resultado.get());
+        }
+
+        return ResponseEntity.status(404)
+                .body("Cliente não encontrado!");
+    }
 }

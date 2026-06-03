@@ -17,5 +17,8 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     @Query("SELECT c from Cliente c WHERE c.nome LIKE %:nome%")
     List<Cliente> filtrarPorNome(@Param("nome")String nome);
 
+    @Query("SELECT c FROM Curso c WHERE c.nome LIKE :nome")
+    Cliente buscarPorNome(@Param("nome") String nome);
+
 
 }
