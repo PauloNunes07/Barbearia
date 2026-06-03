@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClienteService {
@@ -17,10 +18,10 @@ public class ClienteService {
         return clienteRepository.findAll();
     }
 
-    public Cliente buscarPorId(Long id) {
+    public Optional<Cliente> buscarPorId(Long id) {
 
         if(clienteRepository.existsById(id)){
-            return clienteRepository.buscarPorId(id);
+            return clienteRepository.findById(id);
         }
 
         throw new RuntimeException("erro esse id não existe");
