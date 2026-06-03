@@ -5,6 +5,7 @@ import br.com.Spa.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -28,13 +29,39 @@ public class ClienteService {
 
     }
 
-    public List<Cliente> buscarPorNome(String nome) {
-        return buscarPorNome(nome);
+    public Cliente cadastrarCliente(Cliente cliente){
+        Cliente clienteExistente = clienteRepository.buscarPorNome(cliente.getNome());
+        if(clienteExistente != null){
+            throw new RuntimeException("Já existe um Cliente com esse nome " + cliente.getNome());
+        }
+        return clienteRepository.save(cliente);
+
     }
 
-    public
+
+    public boolean removerCliente(Long id) {
+        if(clienteRepository.existsById(id)) {
+            clienteRepository.deleteById(id);
+            return true;
+        }
+        throw new RuntimeException("O Id que deseja remover não foi encontrado ");
+    }
 
 
+    public List<Cliente> filtarPorNome(String nome){
+        return clienteRepository.filtrarPorNome(nome);
+    }
 
+    public Optional<Cliente> atualizarContato(Long id, String telefone, String email){
+        Cliente inforCliente = clienteRepository.buscarPorId(id);
+        if(inforCliente != null){
+            inforCliente.setTelefone(telefone);
+            inforCliente.setEmail(email);
 
+            return  Optional.of(clienteRepository.save(inforCliente));
+        }
+
+        return Optional.empty();
+
+    }
 }
