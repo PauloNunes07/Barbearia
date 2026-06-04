@@ -28,6 +28,7 @@ public class ClienteController {
         List<Cliente> clientes = clienteService.filtarPorNome(nome);
         if(!clientes.isEmpty()){
             return ResponseEntity.status(200).body(clientes);
+
         }else{
             return ResponseEntity.status(404).body("Error! Nome não encontrado!");
         }
