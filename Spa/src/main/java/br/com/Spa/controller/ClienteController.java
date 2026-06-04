@@ -41,6 +41,7 @@ public class ClienteController {
         try{
             clienteService.cadastrarCliente(cliente);
             return ResponseEntity.status(201).body("Cliente Cadastrado Com Sucesso!");
+
         } catch (RuntimeException e){
             return ResponseEntity.status(409).body(e.getMessage());
         }
