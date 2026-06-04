@@ -30,7 +30,7 @@ public class ClienteController {
             return ResponseEntity.status(200).body(clientes);
 
         }else{
-            return ResponseEntity.status(404).body("Error! Nome não encontrado!");
+            return ResponseEntity.status(404).body("Error! Nome não encontrado !");
         }
 
     }
