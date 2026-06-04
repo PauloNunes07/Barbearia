@@ -1,7 +1,6 @@
 package br.com.Spa.controller;
 
 import br.com.Spa.model.Cliente;
-import br.com.Spa.repository.ClienteRepository;
 
 import br.com.Spa.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +22,13 @@ public class ClienteController {
         return ResponseEntity.ok(clienteService.listar());
     }
 
-    @GetMapping("/buscar/nome")
-    public ResponseEntity<?> filtrarPorNome(@RequestParam String nome){
+    @GetMapping("/buscar/{nome}")
+    public ResponseEntity<?> filtrarPorNome(@PathVariable String nome){
 
         List<Cliente> clientes = clienteService.filtarPorNome(nome);
         if(!clientes.isEmpty()){
             return ResponseEntity.status(200).body(clientes);
+
         }else{
             return ResponseEntity.status(404).body("Error! Nome não encontrado!");
         }
@@ -39,9 +39,9 @@ public class ClienteController {
     public ResponseEntity<?> cadastrarCliente(@RequestBody Cliente cliente) {
         try{
             clienteService.cadastrarCliente(cliente);
-            return ResponseEntity.status(201).body("Curso Cadastrado Com Sucesso!");
+            return ResponseEntity.status(201).body("Cliente Cadastrado Com Sucesso!");
         } catch (RuntimeException e){
-            return ResponseEntity.status(409).body("Erro ao cadastrar Cliente!");
+            return ResponseEntity.status(409).body(e.getMessage());
         }
 
     }
@@ -54,7 +54,7 @@ public class ClienteController {
 
         }
         catch (RuntimeException e){
-            return ResponseEntity.status(409).body("Erro ao tentar remover o Cliente");
+            return ResponseEntity.status(409).body(e.getMessage());
         }
 
     }
