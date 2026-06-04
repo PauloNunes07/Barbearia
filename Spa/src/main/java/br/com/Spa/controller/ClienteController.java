@@ -37,6 +37,7 @@ public class ClienteController {
 
     @PostMapping("/cadastrar")
     public ResponseEntity<?> cadastrarCliente(@RequestBody Cliente cliente) {
+
         try{
             clienteService.cadastrarCliente(cliente);
             return ResponseEntity.status(201).body("Cliente Cadastrado Com Sucesso!");
