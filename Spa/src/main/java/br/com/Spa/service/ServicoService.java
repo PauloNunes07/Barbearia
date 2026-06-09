@@ -4,6 +4,9 @@ import br.com.Spa.model.Cliente;
 import br.com.Spa.model.Servico;
 import br.com.Spa.repository.ServicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,13 +51,13 @@ public class ServicoService {
         return servicoRepository.filtrarPorNome(nome);
     }
 
-    public Optional<Cliente> atualizarContato(Long id, String telefone, String email){
-        Cliente inforCliente = clienteRepository.buscarPorId(id);
-        if(inforCliente != null){
-            inforCliente.setTelefone(telefone);
-            inforCliente.setEmail(email);
+    public Optional<Servico> atualizarServico(Long id, int duracao, double preco){
+        Servico inforServico = servicoRepository.buscarPorId(id);
+        if(inforServico != null){
+            inforServico.setDuracao(duracao);
+            inforServico.setPrecoServico(preco);
 
-            return  Optional.of(clienteRepository.save(inforCliente));
+            return  Optional.of(servicoRepository.save(inforServico));
         }
 
         return Optional.empty();
