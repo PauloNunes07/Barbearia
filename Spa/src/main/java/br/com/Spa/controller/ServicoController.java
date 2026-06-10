@@ -1,17 +1,15 @@
 package br.com.Spa.controller;
 
 import br.com.Spa.dto.ServicoDTO;
-import br.com.Spa.model.Cliente;
 import br.com.Spa.model.Servico;
-import br.com.Spa.repository.ServicoRepository;
 
 import br.com.Spa.service.ServicoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/servicos")
@@ -38,7 +36,7 @@ public class ServicoController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrarServico(@RequestBody ServicoDTO servicoDTO) {
+    public ResponseEntity<?> cadastrarServico(@RequestBody @Valid ServicoDTO servicoDTO) {
 
         try {
             servicoService.cadastrarServico(servicoDTO);

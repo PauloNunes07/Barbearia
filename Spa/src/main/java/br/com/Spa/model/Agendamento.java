@@ -27,9 +27,8 @@ public class Agendamento {
     private double precoTotal;
 
     @Column(nullable = false)
-    private LocalDateTime data;
+    private LocalDateTime dataHora;
 
-    @Column(nullable = false)
     private String observacao;
 
 

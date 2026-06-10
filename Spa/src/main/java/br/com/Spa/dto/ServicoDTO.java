@@ -26,6 +26,6 @@ public class ServicoDTO {
     private String tipoServico;
 
     @NotBlank(message = "Descrição do serviço obrigatória")
-    @Size(min = 10, max = 50, message =  "Descrição do serviço deve ter entre 10 e 50 caracteres")
+    @Size(min = 10, max = 100, message =  "Descrição do serviço deve ter entre 10 e 50 caracteres")
     private String descricaoServico;
 }

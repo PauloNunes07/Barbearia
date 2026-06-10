@@ -4,6 +4,7 @@ import br.com.Spa.dto.ClienteDTO;
 import br.com.Spa.model.Cliente;
 
 import br.com.Spa.service.ClienteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class ClienteController {
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrarCliente(@RequestBody ClienteDTO clienteDTO) {
+    public ResponseEntity<?> cadastrarCliente(@RequestBody @Valid ClienteDTO clienteDTO) {
 
         try{
             clienteService.cadastrarCliente(clienteDTO);
