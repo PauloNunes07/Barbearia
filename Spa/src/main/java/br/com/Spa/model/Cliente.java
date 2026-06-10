@@ -2,14 +2,12 @@ package br.com.Spa.model;
 
 import jakarta.persistence.*;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Getter @Setter
+@Data
 @NoArgsConstructor
-
+@AllArgsConstructor
 public class Cliente {
 
     @Id
@@ -22,9 +20,10 @@ public class Cliente {
     @Column(nullable = false)
     private int  idade;
 
+    @Column(unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String telefone;
 
 }

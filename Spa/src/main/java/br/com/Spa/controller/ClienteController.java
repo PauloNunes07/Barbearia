@@ -1,5 +1,6 @@
 package br.com.Spa.controller;
 
+import br.com.Spa.dto.ClienteDTO;
 import br.com.Spa.model.Cliente;
 
 import br.com.Spa.service.ClienteService;
@@ -8,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/clientes")
@@ -25,22 +25,21 @@ public class ClienteController {
     @GetMapping("/buscar/{nome}")
     public ResponseEntity<?> filtrarPorNome(@PathVariable String nome){
 
-        List<Cliente> clientes = clienteService.filtarPorNome(nome);
-        if(!clientes.isEmpty()){
-            return ResponseEntity.status(200).body(clientes);
-
-        }else{
-            return ResponseEntity.status(404).body("Error! Nome não encontrado !");
+        List<Cliente> clientes = clienteService.filtrarPorNome(nome);
+        if(!clientes.isEmpty()) {
+            return ResponseEntity.ok(clientes);
         }
+
+        return ResponseEntity.status(404).body("Error! Nome não encontrado !");
 
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrarCliente(@RequestBody Cliente cliente) {
+    public ResponseEntity<?> cadastrarCliente(@RequestBody ClienteDTO clienteDTO) {
 
         try{
-            clienteService.cadastrarCliente(cliente);
-            return ResponseEntity.status(201).body("Cliente Cadastrado Com Sucesso!");
+            clienteService.cadastrarCliente(clienteDTO);
+            return ResponseEntity.ok("Cliente Cadastrado Com Sucesso!");
 
         } catch (RuntimeException e){
             return ResponseEntity.status(409).body(e.getMessage());
@@ -52,7 +51,7 @@ public class ClienteController {
     public ResponseEntity<?> removerCliente(@PathVariable Long id) {
         try{
             clienteService.removerCliente(id);
-            return ResponseEntity.status(200).body("Cliente Removido Com Sucesso!");
+            return ResponseEntity.ok("Cliente Removido Com Sucesso!");
 
         }
         catch (RuntimeException e){
@@ -67,14 +66,15 @@ public class ClienteController {
             @RequestParam String telefone,
             @RequestParam String email) {
 
-        Optional<Cliente> resultado =
-                clienteService.atualizarContato(id, telefone, email);
+        try {
+            Cliente clienteAtualizado = clienteService.atualizarContato(id, telefone, email);
+            return ResponseEntity.ok(clienteAtualizado);
 
-        if (resultado.isPresent()) {
-            return ResponseEntity.ok(resultado.get());
+        } catch (RuntimeException erro){
+            return ResponseEntity.status(404).body(erro.getMessage());
         }
-
-        return ResponseEntity.status(404)
-                .body("Cliente não encontrado!");
     }
+
+
+
 }

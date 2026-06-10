@@ -1,5 +1,6 @@
 package br.com.Spa.controller;
 
+import br.com.Spa.dto.ServicoDTO;
 import br.com.Spa.model.Cliente;
 import br.com.Spa.model.Servico;
 import br.com.Spa.repository.ServicoRepository;
@@ -24,12 +25,24 @@ public class ServicoController {
         return servicoService.listar();
     }
 
+    @GetMapping("/buscar/{nome}")
+    public ResponseEntity<?> filtrarPorNome(@PathVariable String nome){
+
+        List<Servico> servicos = servicoService.filtrarPorNome(nome);
+        if(!servicos.isEmpty()) {
+            return ResponseEntity.ok(servicos);
+        }
+
+        return ResponseEntity.status(404).body("Error! Nome não encontrado !");
+
+    }
+
     @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrarServico(@RequestBody Servico servico) {
+    public ResponseEntity<?> cadastrarServico(@RequestBody ServicoDTO servicoDTO) {
 
         try {
-            servicoService.cadastrarServico(servico);
-            return ResponseEntity.status(201).body("Serviço Cadastrado Com Sucesso!");
+            servicoService.cadastrarServico(servicoDTO);
+            return ResponseEntity.ok("Serviço Cadastrado Com Sucesso!");
 
         } catch (RuntimeException e) {
             return ResponseEntity.status(409).body(e.getMessage());
@@ -38,7 +51,7 @@ public class ServicoController {
     }
 
     @DeleteMapping("/remover/{id}")
-    public ResponseEntity<?> removerCliente(@PathVariable Long id) {
+    public ResponseEntity<?> removerServico(@PathVariable Long id) {
         try {
             servicoService.removerServico(id);
             return ResponseEntity.status(200).body("Serviço Removido Com Sucesso!");
@@ -55,14 +68,13 @@ public class ServicoController {
             @RequestParam int duracao,
             @RequestParam double precoServico) {
 
-        Optional<Servico> resultado =
-                servicoService.atualizarServico(id, duracao, precoServico);
+        try {
+            Servico ServicoAtualizado = servicoService.atualizarServico(id, duracao, precoServico);
+            return ResponseEntity.ok(ServicoAtualizado);
 
-        if (resultado.isPresent()) {
-            return ResponseEntity.ok(resultado.get());
+        }catch (RuntimeException erro) {
+            return ResponseEntity.status(404).body("Servico não encontrado!");
         }
 
-        return ResponseEntity.status(404)
-                .body("Servico não encontrado!");
     }
 }

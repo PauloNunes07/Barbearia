@@ -1,13 +1,12 @@
 package br.com.Spa.service;
 
+import br.com.Spa.dto.ClienteDTO;
 import br.com.Spa.model.Cliente;
 import br.com.Spa.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ClienteService {
@@ -19,50 +18,53 @@ public class ClienteService {
         return clienteRepository.findAll();
     }
 
-    public Optional<Cliente> buscarPorId(Long id) {
+    public Cliente buscarPorId(Long id) {
 
-        if(clienteRepository.existsById(id)){
-            return clienteRepository.findById(id);
-        }
-
-        throw new RuntimeException("erro esse id não existe");
+       return clienteRepository.findById(id).orElseThrow(() ->
+               new RuntimeException("Cliente não encontrado"));
 
     }
 
-    public Cliente cadastrarCliente(Cliente cliente){
-        Cliente clienteExistente = clienteRepository.buscarPorNome(cliente.getNome());
-        if(clienteExistente != null){
-            throw new RuntimeException("Já existe um Cliente com esse nome " + cliente.getNome());
+    public Cliente cadastrarCliente(ClienteDTO clienteDTO){
+        boolean clienteExiste = clienteRepository.findByNome(clienteDTO.getNome()).isPresent();
+
+        if(clienteExiste){
+            throw new RuntimeException("Já existe um Cliente com esse nome " + clienteDTO.getNome());
         }
-        return clienteRepository.save(cliente);
+
+        return clienteRepository.save(toEntity(clienteDTO));
 
     }
 
+    public void removerCliente(Long id) {
 
-    public boolean removerCliente(Long id) {
-        if(clienteRepository.existsById(id)) {
-            clienteRepository.deleteById(id);
-            return true;
-        }
-        throw new RuntimeException("O Id que deseja remover não foi encontrado ");
+       Cliente cliente = buscarPorId(id);
+       clienteRepository.delete(cliente);
     }
 
 
-    public List<Cliente> filtarPorNome(String nome){
+    public List<Cliente> filtrarPorNome(String nome){
         return clienteRepository.filtrarPorNome(nome);
     }
 
-    public Optional<Cliente> atualizarContato(Long id, String telefone, String email){
-        Cliente inforCliente = clienteRepository.buscarPorId(id);
-        if(inforCliente != null){
-            inforCliente.setTelefone(telefone);
-            inforCliente.setEmail(email);
+    public Cliente atualizarContato(Long id, String telefone, String email){
+        Cliente inforCliente = buscarPorId(id);
 
-            return  Optional.of(clienteRepository.save(inforCliente));
-        }
+        inforCliente.setTelefone(telefone);
+        inforCliente.setEmail(email);
 
-        return Optional.empty();
+       return  clienteRepository.save(inforCliente);
 
+    }
+
+    private Cliente toEntity(ClienteDTO clienteDTO){
+        Cliente cliente = new Cliente();
+        cliente.setNome(clienteDTO.getNome());
+        cliente.setIdade(clienteDTO.getIdade());
+        cliente.setTelefone(clienteDTO.getTelefone());
+        cliente.setEmail(clienteDTO.getEmail());
+
+        return cliente;
     }
 
 

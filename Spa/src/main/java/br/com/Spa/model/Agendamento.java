@@ -1,14 +1,13 @@
 package br.com.Spa.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class Agendamento {
 

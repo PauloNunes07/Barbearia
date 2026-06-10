@@ -1,14 +1,14 @@
 package br.com.Spa.model;
 
+import br.com.Spa.enuns.FormaPagamento;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Getter  @Setter
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class Pagamento {
 
@@ -20,9 +20,9 @@ public class Pagamento {
     @JoinColumn(nullable = false)
     private  Agendamento agendamento;
 
-
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String formaPagamento;
+    private FormaPagamento formaPagamento;
 
     @Column(nullable = false)
     private double preco;

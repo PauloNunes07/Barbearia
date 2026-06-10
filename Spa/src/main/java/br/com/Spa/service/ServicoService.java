@@ -1,16 +1,15 @@
 package br.com.Spa.service;
 
-import br.com.Spa.model.Cliente;
+import br.com.Spa.dto.ServicoDTO;
 import br.com.Spa.model.Servico;
 import br.com.Spa.repository.ServicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ServicoService {
 
     @Autowired
@@ -20,48 +19,48 @@ public class ServicoService {
         return servicoRepository.findAll();
     }
 
-    public Optional<Servico> buscarPorId(Long id) {
-
-        if(servicoRepository.existsById(id)){
-            return servicoRepository.findById(id);
-        }
-
-        throw new RuntimeException("erro esse id não existe");
+    public Servico buscarPorId(Long id) {
+        return servicoRepository.findById(id).orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
 
     }
 
-    public Servico cadastrarServico(Servico servico){
-        Servico servicoExistente = servicoRepository.buscarPorNome(servico.getNome());
-        if(servicoExistente != null){
-            throw new RuntimeException("Já existe um Cliente com esse nome " + servico.getNome());
-        }
-        return servicoRepository.save(servico);
+    public Servico cadastrarServico(ServicoDTO servicoDTO){
+        boolean servicoExiste = servicoRepository.findByNome(servicoDTO.getNome()).isPresent();
+       if(servicoExiste){
+           throw new RuntimeException("Já existe um Serviço com esse nome " + servicoDTO.getNome());
+
+       }
+       return servicoRepository.save(toEntity(servicoDTO));
 
     }
 
-    public boolean removerServico(Long id) {
-        if(servicoRepository.existsById(id)) {
-            servicoRepository.deleteById(id);
-            return true;
-        }
-        throw new RuntimeException("O Id que deseja remover não foi encontrado ");
+    public void removerServico(Long id) {
+      Servico servico = buscarPorId(id);
+      servicoRepository.delete(servico);
     }
 
-    public List<Servico> filtarPorNome(String nome){
+    public List<Servico> filtrarPorNome(String nome){
         return servicoRepository.filtrarPorNome(nome);
     }
 
-    public Optional<Servico> atualizarServico(Long id, int duracao, double preco){
-        Servico inforServico = servicoRepository.buscarPorId(id);
-        if(inforServico != null){
-            inforServico.setDuracao(duracao);
-            inforServico.setPrecoServico(preco);
+    public Servico atualizarServico(Long id, int duracao, double precoServico){
+        Servico inforServico = buscarPorId(id);
+        inforServico.setDuracao(duracao);
+        inforServico.setPrecoServico(precoServico);
 
-            return  Optional.of(servicoRepository.save(inforServico));
-        }
+        return servicoRepository.save(inforServico);
 
-        return Optional.empty();
+    }
 
+    private Servico toEntity(ServicoDTO servicoDTO){
+        Servico servico = new Servico();
+        servico.setNome(servicoDTO.getNome());
+        servico.setDuracao(servicoDTO.getDuracao());
+        servico.setPrecoServico(servicoDTO.getPrecoServico());
+        servico.setTipoServico(servicoDTO.getTipoServico());
+        servico.setDescricaoServico(servicoDTO.getDescricaoServico());
+
+        return servico;
     }
 
 }

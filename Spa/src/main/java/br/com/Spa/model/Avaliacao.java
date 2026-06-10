@@ -1,13 +1,13 @@
 package br.com.Spa.model;
 
-
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import lombok.*;
 
 @Entity
-@Getter @Setter
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class Avaliacao {
 
@@ -15,7 +15,7 @@ public class Avaliacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_cliente", nullable = false)
     private Cliente cliente;
 
