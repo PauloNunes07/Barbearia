@@ -16,9 +16,9 @@ public class Pagamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(nullable = false)
-    private  Agendamento agendamento;
+    private Agendamento agendamento;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

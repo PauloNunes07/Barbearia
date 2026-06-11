@@ -2,9 +2,11 @@ package br.com.Spa.service;
 
 import br.com.Spa.dto.AgendamentoDTO;
 import br.com.Spa.model.Agendamento;
+import br.com.Spa.util.BaseValidator;
 import br.com.Spa.model.Cliente;
 import br.com.Spa.model.Servico;
 import br.com.Spa.repository.AgendamentoRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AgendamentoService {
+public class AgendamentoService extends BaseValidator {
+
     @Autowired
     private AgendamentoRepository agendamentoRepository;
 
@@ -49,19 +52,23 @@ public class AgendamentoService {
     }
 
     public List<Agendamento> filtrarPorPeriodo(LocalDateTime inicio, LocalDateTime fim) {
+        validarPeriodo(inicio, fim);
         return agendamentoRepository.filtrarPorData(inicio, fim);
     }
 
     public List<Agendamento> filtrarPorCliente(Long idCliente) {
+        validarEntidade(idCliente, "Cliente");
         return agendamentoRepository.findByCliente(idCliente);
     }
 
     public List<Agendamento> filtrarPorServico(Long idServico) {
+        validarEntidade(idServico, "Servico");
         return agendamentoRepository.findByServico(idServico);
     }
 
     public Agendamento atualizarAgendamento(Long id, LocalDateTime dataHora) {
 
+        validarDataHora(dataHora);
         Agendamento infoAgendamento = buscarPorId(id);
         Optional<Agendamento> conflito = agendamentoRepository.buscarPorDataHora(dataHora);
 
@@ -73,6 +80,11 @@ public class AgendamentoService {
         return agendamentoRepository.save(infoAgendamento);
     }
 
+    public Optional<Agendamento> buscarPorDataHora(LocalDateTime dataHora) {
+        validarDataHora(dataHora);
+        return agendamentoRepository.buscarPorDataHora(dataHora);
+    }
+
     private Agendamento toEntity(AgendamentoDTO agendamentoDTO) {
 
         Cliente buscaCliente = clienteService.buscarPorId(agendamentoDTO.getCliente().getId());
@@ -81,12 +93,14 @@ public class AgendamentoService {
         Agendamento agendamento = new Agendamento();
         agendamento.setCliente(buscaCliente);
         agendamento.setServico(buscaServico);
-        agendamento.setPrecoTotal(agendamentoDTO.getServico().getPrecoServico());
+        agendamento.setPrecoTotal(buscaServico.getPrecoServico());
         agendamento.setDataHora(agendamentoDTO.getDataHora());
         agendamento.setObservacao(agendamentoDTO.getObservacao());
 
         return agendamento;
     }
+
+
 
 
 
