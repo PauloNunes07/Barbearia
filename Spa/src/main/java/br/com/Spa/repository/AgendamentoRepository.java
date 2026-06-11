@@ -17,11 +17,11 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
     @Query("SELECT a FROM Agendamento a WHERE a.servico.id = :idServico")
     List<Agendamento> findByServico(@Param("idServico") Long idServico);
 
-    @Query("SELECT a FROM Agendamento a WHERE a.data BETWEEN :inicio AND :fim")
+    @Query("SELECT a FROM Agendamento a WHERE a.dataHora BETWEEN :inicio AND :fim")
     List<Agendamento> filtrarPorData(@Param("inicio") LocalDateTime inicio,
                                     @Param("fim") LocalDateTime fim);
 
-    @Query("SELECT a FROM Agendamento a WHERE a.data = :dataHora")
+    @Query("SELECT a FROM Agendamento a WHERE a.dataHora = :dataHora")
     Optional<Agendamento> buscarPorDataHora(@Param("dataHora") LocalDateTime dataHora);
 
 }
