@@ -21,7 +21,7 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
     List<Agendamento> filtrarPorData(@Param("inicio") LocalDateTime inicio,
                                     @Param("fim") LocalDateTime fim);
 
-    @Query("SELECT a FROM Agendamento a WHERE a.data = :dataHora")
+    @Query("SELECT a FROM Agendamento a WHERE a.dataHora = :dataHora")
     Optional<Agendamento> buscarPorDataHora(@Param("dataHora") LocalDateTime dataHora);
 
 }
