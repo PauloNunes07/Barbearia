@@ -1,6 +1,6 @@
 package br.com.Spa.model;
 
-import br.com.Spa.enuns.FormaPagamento;
+import br.com.Spa.util.enuns.FormaPagamento;
 import jakarta.persistence.*;
 import lombok.*;
 

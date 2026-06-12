@@ -1,4 +1,4 @@
-package br.com.Spa.enuns;
+package br.com.Spa.util.enuns;
 
 public enum FormaPagamento {
     PIX,
