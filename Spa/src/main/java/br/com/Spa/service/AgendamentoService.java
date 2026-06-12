@@ -87,8 +87,8 @@ public class AgendamentoService extends BaseValidator {
 
     private Agendamento toEntity(AgendamentoDTO agendamentoDTO) {
 
-        Cliente buscaCliente = clienteService.buscarPorId(agendamentoDTO.getCliente().getId());
-        Servico buscaServico = servicoService.buscarPorId(agendamentoDTO.getServico().getId());
+        Cliente buscaCliente = clienteService.buscarPorId(agendamentoDTO.getClienteID());
+        Servico buscaServico = servicoService.buscarPorId(agendamentoDTO.getServicoID());
 
         Agendamento agendamento = new Agendamento();
         agendamento.setCliente(buscaCliente);

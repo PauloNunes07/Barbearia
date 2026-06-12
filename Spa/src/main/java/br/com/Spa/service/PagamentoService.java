@@ -57,6 +57,7 @@ public class PagamentoService extends BaseValidator {
 
     private Pagamento toEntity(PagamentoDTO pagamentoDTO) {
         Agendamento agendamento = agendamentoService.buscarPorId(pagamentoDTO.getAgendamento().getId());
+
         Pagamento pagamento = new Pagamento();
         pagamento.setAgendamento(agendamento);
         pagamento.setFormaPagamento(pagamentoDTO.getFormaPagamento());

@@ -23,7 +23,7 @@ public class ClienteController {
         return ResponseEntity.ok(clienteService.listar());
     }
 
-    @GetMapping("/buscar/{nome}")
+    @GetMapping("/buscar/nome/{nome}")
     public ResponseEntity<?> filtrarPorNome(@PathVariable String nome){
 
         List<Cliente> clientes = clienteService.filtrarPorNome(nome);
@@ -32,6 +32,18 @@ public class ClienteController {
         }
 
         return ResponseEntity.status(404).body("Error! Nome não encontrado !");
+
+    }
+
+    @GetMapping("/buscar/id/{id}")
+    public ResponseEntity<?> buscarPorID(@PathVariable Long id){
+        try {
+            Cliente cliente = clienteService.buscarPorId(id);
+            return ResponseEntity.ok(cliente);
+
+        } catch(RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
 
     }
 

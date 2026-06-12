@@ -23,6 +23,7 @@ public class AgendamentoController {
         return ResponseEntity.ok(agendamentoService.listar());
     }
 
+
     @GetMapping("/buscar/{id}")
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
 

@@ -15,11 +15,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class AgendamentoDTO {
 
-    @NotNull(message = "Cliente obrigatório")
-    private Cliente cliente;
+    @NotNull(message = "Id do Cliente obrigatório")
+    @Positive(message = "ID do cliente deve ser maior que zero")
+    private Long clienteID;
 
-    @NotNull(message = "Servico obrigatório")
-    private Servico servico;
+    @NotNull(message = "ID do Servico obrigatório")
+    @Positive(message = "ID do serviço deve ser maior que zero")
+    private Long servicoID;
 
     @NotNull(message = "Data e hora obrigatória")
     @Future(message = "O Agendamento deve ser para uma data e hora futura")
