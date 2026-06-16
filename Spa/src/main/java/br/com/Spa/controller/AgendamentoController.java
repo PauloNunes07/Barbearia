@@ -39,8 +39,7 @@ public class AgendamentoController {
     public ResponseEntity<?> cadastrarAgendamento(
             @RequestBody @Valid AgendamentoDTO agendamentoDTO) {
 
-        try {
-            agendamentoService.cadastrarAgendamento(agendamentoDTO);
+        try {agendamentoService.cadastrarAgendamento(agendamentoDTO);
             return ResponseEntity.ok("Agendamento cadastrado com sucesso!");
 
         } catch (RuntimeException e) {
@@ -51,8 +50,8 @@ public class AgendamentoController {
     @DeleteMapping("/remover/{id}")
     public ResponseEntity<?> removerAgendamento(@PathVariable Long id) {
 
-        try {
-            agendamentoService.removerAgendamento(id);
+        try {agendamentoService.removerAgendamento(id);
+
             return ResponseEntity.ok("Agendamento removido com sucesso!");
 
         } catch (RuntimeException e) {
@@ -60,12 +59,25 @@ public class AgendamentoController {
         }
     }
 
+    @GetMapping("/periodo")
+    public ResponseEntity<?> filtrarPorPeriodo(
+            @RequestParam LocalDateTime inicio,
+            @RequestParam LocalDateTime fim) {
+
+        try {
+            return ResponseEntity.ok(agendamentoService.filtrarPorPeriodo(inicio, fim)
+            );
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
     @GetMapping("/cliente/{idCliente}")
     public ResponseEntity<?> filtrarPorCliente(@PathVariable Long idCliente) {
 
         try {
-            return ResponseEntity.ok(
-                    agendamentoService.filtrarPorCliente(idCliente));
+            return ResponseEntity.ok(agendamentoService.filtrarPorCliente(idCliente));
 
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).body(e.getMessage());
@@ -76,8 +88,7 @@ public class AgendamentoController {
     public ResponseEntity<?> filtrarPorServico(@PathVariable Long idServico) {
 
         try {
-            return ResponseEntity.ok(
-                    agendamentoService.filtrarPorServico(idServico));
+            return ResponseEntity.ok(agendamentoService.filtrarPorServico(idServico));
 
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).body(e.getMessage());
@@ -90,11 +101,23 @@ public class AgendamentoController {
             @RequestParam LocalDateTime dataHora) {
 
         try {
-            return ResponseEntity.ok(
-                    agendamentoService.atualizarAgendamento(id, dataHora));
+            return ResponseEntity.ok(agendamentoService.atualizarAgendamento(id, dataHora));
 
         } catch (RuntimeException e) {
             return ResponseEntity.status(409).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/buscarPorDatahora")
+    public ResponseEntity<?> buscarPorDataHora(
+            @RequestParam LocalDateTime dataHora) {
+
+        try {
+            return ResponseEntity.ok(agendamentoService.buscarPorDataHora(dataHora)
+            );
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
         }
     }
 }
