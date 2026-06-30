@@ -2,7 +2,6 @@ package br.com.Spa.controller;
 
 import br.com.Spa.dto.ServicoDTO;
 import br.com.Spa.model.Servico;
-
 import br.com.Spa.service.ServicoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,56 +18,56 @@ public class ServicoController {
     private ServicoService servicoService;
 
     @GetMapping
-    public List<Servico> listarServicos() {
-        return servicoService.listar();
+    public ResponseEntity<List<Servico>> listarServicos() {
+        return ResponseEntity.ok(servicoService.listar());
     }
 
     @GetMapping("/filtrar/{nome}")
-    public ResponseEntity<?> filtrarPorNome(@PathVariable String nome){
+    public ResponseEntity<?> filtrarPorNome(@PathVariable String nome) {
 
         List<Servico> servicos = servicoService.filtrarPorNome(nome);
-        if(!servicos.isEmpty()) {
+
+        if (!servicos.isEmpty()) {
             return ResponseEntity.ok(servicos);
         }
 
-        return ResponseEntity.status(404).body("Error! Nome não encontrado !");
-
+        return ResponseEntity.status(404).body("Error! Nome não encontrado!");
     }
 
     @GetMapping("/buscar/id/{id}")
-    public ResponseEntity<?> filtrarPorNome(@PathVariable Long id){
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+
         try {
-             Servico servico = servicoService.buscarPorId(id);
-             return ResponseEntity.ok(servico);
+            return ResponseEntity.ok(servicoService.buscarPorId(id));
+
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }
-
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrarServico(@RequestBody @Valid ServicoDTO servicoDTO) {
+    public ResponseEntity<?> cadastrarServico(
+            @RequestBody @Valid ServicoDTO servicoDTO) {
 
         try {
             servicoService.cadastrarServico(servicoDTO);
-            return ResponseEntity.ok("Serviço Cadastrado Com Sucesso!");
+            return ResponseEntity.ok("Serviço cadastrado com sucesso!");
 
         } catch (RuntimeException e) {
             return ResponseEntity.status(409).body(e.getMessage());
         }
-
     }
 
     @DeleteMapping("/remover/{id}")
     public ResponseEntity<?> removerServico(@PathVariable Long id) {
+
         try {
             servicoService.removerServico(id);
-            return ResponseEntity.status(200).body("Serviço Removido Com Sucesso!");
+            return ResponseEntity.ok("Serviço removido com sucesso!");
 
         } catch (RuntimeException e) {
-            return ResponseEntity.status(409).body(e.getMessage());
+            return ResponseEntity.status(404).body(e.getMessage());
         }
-
     }
 
     @PutMapping("/atualizar/{id}")
@@ -78,12 +77,13 @@ public class ServicoController {
             @RequestParam double precoServico) {
 
         try {
-            Servico ServicoAtualizado = servicoService.atualizarServico(id, duracao, precoServico);
-            return ResponseEntity.ok(ServicoAtualizado);
+            Servico servicoAtualizado =
+                    servicoService.atualizarServico(id, duracao, precoServico);
 
-        }catch (RuntimeException erro) {
-            return ResponseEntity.status(404).body(erro.getMessage());
+            return ResponseEntity.ok(servicoAtualizado);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
         }
-
     }
 }

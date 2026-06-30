@@ -2,7 +2,6 @@ package br.com.Spa.controller;
 
 import br.com.Spa.dto.ClienteDTO;
 import br.com.Spa.model.Cliente;
-
 import br.com.Spa.service.ClienteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,53 +23,50 @@ public class ClienteController {
     }
 
     @GetMapping("/buscar/nome/{nome}")
-    public ResponseEntity<?> filtrarPorNome(@PathVariable String nome){
+    public ResponseEntity<?> filtrarPorNome(@PathVariable String nome) {
 
-        List<Cliente> clientes = clienteService.filtrarPorNome(nome);
-        if(!clientes.isEmpty()) {
-            return ResponseEntity.ok(clientes);
+        try {
+            return ResponseEntity.ok(clienteService.filtrarPorNome(nome));
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
         }
-
-        return ResponseEntity.status(404).body("Error! Nome não encontrado !");
-
     }
 
     @GetMapping("/buscar/id/{id}")
-    public ResponseEntity<?> buscarPorID(@PathVariable Long id){
-        try {
-            Cliente cliente = clienteService.buscarPorId(id);
-            return ResponseEntity.ok(cliente);
+    public ResponseEntity<?> buscarPorID(@PathVariable Long id) {
 
-        } catch(RuntimeException e) {
+        try {
+            return ResponseEntity.ok(clienteService.buscarPorId(id));
+
+        } catch (RuntimeException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }
-
     }
 
     @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrarCliente(@RequestBody @Valid ClienteDTO clienteDTO) {
+    public ResponseEntity<?> cadastrarCliente(
+            @RequestBody @Valid ClienteDTO clienteDTO) {
 
-        try{
+        try {
             clienteService.cadastrarCliente(clienteDTO);
-            return ResponseEntity.ok("Cliente Cadastrado Com Sucesso!");
+            return ResponseEntity.ok("Cliente cadastrado com sucesso!");
 
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return ResponseEntity.status(409).body(e.getMessage());
         }
-
     }
 
     @DeleteMapping("/remover/{id}")
     public ResponseEntity<?> removerCliente(@PathVariable Long id) {
-        try{
+
+        try {
             clienteService.removerCliente(id);
-            return ResponseEntity.ok("Cliente Removido Com Sucesso!");
+            return ResponseEntity.ok("Cliente removido com sucesso!");
 
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
         }
-        catch (RuntimeException e){
-            return ResponseEntity.status(409).body(e.getMessage());
-        }
-
     }
 
     @PutMapping("/atualizar/{id}")
@@ -80,14 +76,12 @@ public class ClienteController {
             @RequestParam String email) {
 
         try {
-            Cliente clienteAtualizado = clienteService.atualizarContato(id, telefone, email);
-            return ResponseEntity.ok(clienteAtualizado);
+            return ResponseEntity.ok(
+                    clienteService.atualizarContato(id, telefone, email)
+            );
 
-        } catch (RuntimeException erro){
-            return ResponseEntity.status(404).body(erro.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
         }
     }
-
-
-
 }
