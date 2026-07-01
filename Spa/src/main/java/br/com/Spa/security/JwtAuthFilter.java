@@ -16,20 +16,26 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final String SECRET_KEY = "spa@chave-secreta-jwt-2026";
-
+    private final String SECRET_KEY = "barbeariaSistema@jwt-2026-cod-secreta-auth-api";
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain)
             throws ServletException, IOException {
+
+        String path = request.getRequestURI();
+
+        if (path.startsWith("/auth/login") ||
+                path.startsWith("/usuarios/cadastrar")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String header = request.getHeader("Authorization");
 
@@ -47,11 +53,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
                 String username = claims.getSubject();
 
+                List<?> roles = (List<?>) claims.get("roles");
+
                 List<GrantedAuthority> authorities =
-                        ((List<Map<String, String>>) claims.get("roles"))
-                                .stream()
-                                .map(r -> new SimpleGrantedAuthority(r.get("authority")))
-                                .collect(Collectors.toList());
+                        roles.stream()
+                                .map(role -> new SimpleGrantedAuthority(role.toString()))
+                                .collect(java.util.stream.Collectors.toList());
 
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(
@@ -60,12 +67,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                 authorities
                         );
 
-                SecurityContextHolder.getContext()
-                        .setAuthentication(auth);
+                SecurityContextHolder.getContext().setAuthentication(auth);
 
             } catch (Exception e) {
-
-                e.printStackTrace();
                 SecurityContextHolder.clearContext();
             }
         }

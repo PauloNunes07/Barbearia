@@ -2,7 +2,9 @@ package br.com.Spa.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -16,8 +18,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final String SECRET_KEY = "spa@chave-secreta-jwt-2026";
-
+    private final String SECRET_KEY =
+            "barbeariaSistema@jwt-2026-cod-secreta-auth-api";
     @Bean
     public SecurityFilterChain filterChain(
             HttpSecurity http,
@@ -27,21 +29,25 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
 
-                        // Apenas ADMIN pode cadastrar
+                        // Login liberado
+                        .requestMatchers("/auth/login","/usuarios/cadastrar").permitAll()
+
+                        // Rotas que qualquer usuario pode fazer no sistema
                         .requestMatchers(
                                 "/clientes/cadastrar",
-                                "/servicos/cadastrar"
-                        ).hasRole("ADMIN")
+                                "/servicos/listar",
+                                "/avaliacao/cadastrar",
+                                "/agendamento/cadastrar",
+                                "/pagamento/cadastrar").authenticated()
 
                         // Rotas protegidas
-                        .requestMatchers("/clientes/**").authenticated()
-                        .requestMatchers("/servicos/**").authenticated()
-                        .requestMatchers("/agendamento/**").authenticated()
-                        .requestMatchers("/pagamento/**").authenticated()
-                        .requestMatchers("/avaliacao/**").authenticated()
+                        .requestMatchers("/clientes/**").hasAnyRole("ROLE_FUNCIONARIO", "ROLE_BARBEIRO")
+                        .requestMatchers("/servicos/**").hasAnyRole("FUNCIONARIO", "BARBEIRO")
+                        .requestMatchers("/agendamento/**").hasAnyRole("FUNCIONARIO", "BARBEIRO")
+                        .requestMatchers("/pagamento/**").hasAnyRole("FUNCIONARIO", "BARBEIRO")
+                        .requestMatchers("/avaliacao/**").hasAnyRole("FUNCIONARIO", "BARBEIRO")
 
-                        // Login liberado
-                        .requestMatchers("/auth/login").permitAll()
+
 
                         // Qualquer outra rota também exige autenticação
                         .anyRequest().authenticated()
@@ -56,24 +62,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public InMemoryUserDetailsManager userDetailsService(
-            PasswordEncoder passwordEncoder) {
-
-        var usuario = User.builder()
-                .username("usuario")
-                .password(passwordEncoder.encode("1234"))
-                .roles("USER")
-                .build();
-
-        var admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder.encode("142536"))
-                .roles("ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(usuario, admin);
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

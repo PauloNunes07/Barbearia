@@ -61,7 +61,7 @@ public class PagamentoController {
         }
     }
 
-    @GetMapping("/periodo")
+    @GetMapping("/filtrar/periodo")
     public ResponseEntity<?> filtrarPorPeriodo(
             @RequestParam LocalDateTime inicio,
             @RequestParam LocalDateTime fim) {

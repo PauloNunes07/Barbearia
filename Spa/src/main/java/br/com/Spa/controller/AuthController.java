@@ -2,7 +2,7 @@ package br.com.Spa.controller;
 
 import br.com.Spa.dto.LoginRequestDTO;
 import br.com.Spa.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -11,23 +11,19 @@ import java.util.Map;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody LoginRequestDTO loginRequestDTO) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO dto) {
 
-        try {
-            String token = authService.login(
-                    loginRequestDTO.getUsername(),
-                    loginRequestDTO.getPassword()
-            );
+        String token = authService.login(dto.getLogin(), dto.getSenha());
 
-            return Map.of("token", token);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Map.of("token", "tente novamente");
-        }
+        return ResponseEntity.ok(
+                Map.of("token", token)
+        );
     }
 }
